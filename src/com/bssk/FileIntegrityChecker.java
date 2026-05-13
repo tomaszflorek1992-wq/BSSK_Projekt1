@@ -17,16 +17,25 @@ public class FileIntegrityChecker {
     private static final String HASH_ALGORITHM = "SHA-256";
 
     public static void main(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Podaj sciezke do pliku jako argument.");
-            return;
+        Scanner scanner = new Scanner(System.in);
+        String filePathInput;
+
+        if (args.length >= 1) {
+            filePathInput = args[0];
+        } else {
+            System.out.print("Podaj sciezke do pliku: ");
+            filePathInput = scanner.nextLine().trim();
         }
 
-        String filePathInput = args[0];
         Path targetFile = Paths.get(filePathInput);
 
         if (!Files.exists(targetFile)) {
-            System.out.println("Plik nie istnieje.");
+            System.out.println("Plik nie istnieje: " + filePathInput);
+            return;
+        }
+
+        if (Files.isDirectory(targetFile)) {
+            System.out.println("Podana sciezka prowadzi do katalogu, nie do pliku.");
             return;
         }
 
@@ -46,17 +55,17 @@ public class FileIntegrityChecker {
         if (!database.containsKey(absolutePath)) {
             database.put(absolutePath, currentHash);
             saveDatabase(database);
-            System.out.println("Zapisano nowy stan pliku");
+            System.out.println("Plik nie byl wczesniej analizowany. Zapisano nowy stan pliku.");
             return;
         }
 
         String previousHash = database.get(absolutePath);
         if (currentHash.equals(previousHash)) {
-            System.out.println("nie zmienilo sie");
+            System.out.println("Nie zmienilo sie.");
         } else {
             database.put(absolutePath, currentHash);
             saveDatabase(database);
-            System.out.println("zmienilo sie");
+            System.out.println("Zmienilo sie!");
         }
     }
 
