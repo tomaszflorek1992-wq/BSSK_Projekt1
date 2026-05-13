@@ -29,7 +29,7 @@ public class FileIntegrityChecker {
             System.out.print("Podaj sciezke do pliku: ");
             filePathInput = scanner.nextLine().trim();
         }
-
+        filePathInput = filePathInput.replace("\"", "");
         Path targetFile = Paths.get(filePathInput);
 
         if (!Files.exists(targetFile)) {
